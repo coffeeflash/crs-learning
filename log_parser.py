@@ -6,6 +6,18 @@ import pickle  # for storing some data
 FILTER_MODSECURITY = re.compile(r".*ModSecurity.*$")
 LINE_PATTERN_NGINX_ERROR = re.compile(
     r"(\S+) (\S+) \[(\S+)] .* ModSecurity: (.+) \[file \"(\S+).conf.* \[id \"(\S+)\"].* \[msg \"(.+)\"].*, server: (\S+), request: \"(\S+) (\S+) .*$")
+ngx_fields = {
+        "date": 1,
+        "time": 2,
+        "level": 3,
+        "summary": 4,
+        "rule_set": 5,
+        "rule_id": 6,
+        "msg": 7,
+        "server": 8,
+        "method": 9,
+        "request": 10
+    }
 LINE_PATTERN_temp = '(\S+) (\S+) [(\S+)] (\S+) ModSecurity: (\S+) [file "(\S+).conf(\S+) [id "(\S+)"(\S+) [msg "(\S+)"]' \
                     ' (\S+)[ver "(\S+)"](\S+)] [tag (\S+)] [host<_>, client: (\S+), server: (\S+), request: "(\S+) (\S+) '
 
@@ -14,6 +26,19 @@ output_filename = os.path.normpath("output/parsed_lines.log")
 # Overwrites the file, ensure we're starting out with a blank file
 # with open(output_filename, "w") as out_file:
 # out_file.write("")
+
+#make rules in steps with this object...
+class Rule:
+  def __init__(self, request, rule_id):
+    self.request = request
+    self.rule_id = rule
+
+  def myfunc(self):
+    print("Hello my name is " + self.request)
+
+
+exclusion_rules = {""}
+excl_rule_id = 10000
 
 # Open output file in 'append' mode
 with open(output_filename, "a") as out_file:
@@ -25,16 +50,11 @@ with open(output_filename, "a") as out_file:
             if FILTER_MODSECURITY.search(line):
                 match = LINE_PATTERN_NGINX_ERROR.search(line)
                 print(line)
-
-                print(match.group(1))
-                print(match.group(2))
-                print(match.group(3))
-                print(match.group(4))
-                print(match.group(5))
-                print(match.group(6))
-                print(match.group(7))
-                print(match.group(8))
-                print(match.group(9))
-                print(match.group(10))
-
+                pot_ecl_rule = 'SecRule REQUEST_URI "@beginsWith ' + match.group(ngx_fields['request']) \
+                               + '" "id:' + str(excl_rule_id) + ', phase:1, pass, nolog, ctl:ruleRemoveById=930130"'
+                if pot_ecl_rule not in exclusion_rules:
+                    exclusion_rules.add(pot_ecl_rule)
+                    excl_rule_id += 1
                 out_file.write(line)
+
+print(exclusion_rules)
