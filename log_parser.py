@@ -31,14 +31,18 @@ output_filename = os.path.normpath("output/parsed_lines.log")
 class Rule:
   def __init__(self, request, rule_id):
     self.request = request
-    self.rule_id = rule
+    self.rule_id = rule_id
 
-  def myfunc(self):
+  def toString(self):
     print("Hello my name is " + self.request)
+
+
 
 
 exclusion_rules = {""}
 excl_rule_id = 10000
+
+
 
 # Open output file in 'append' mode
 with open(output_filename, "a") as out_file:
@@ -58,3 +62,9 @@ with open(output_filename, "a") as out_file:
                 out_file.write(line)
 
 print(exclusion_rules)
+
+test = {Rule("abc", "a")}
+a = Rule("abc", "a")
+print(test)
+test.add(a)
+print(test)
