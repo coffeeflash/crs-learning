@@ -1,9 +1,10 @@
 import os
 import re
 import pickle  # for storing some data
+import gzip
 
 # Regex used to match relevant loglines (in this case, a specific IP address)
-FILTER_MODSECURITY = re.compile(r".*ModSecurity.*$")
+FILTER_MODSECURITY = re.compile(r".*ModSecurity:.*$")
 LINE_PATTERN_NGINX_ERROR = re.compile(
     r"(\S+) (\S+) \[(\S+)] .* ModSecurity: (.+) \[file \"(\S+).conf.* \[id \"(\S+)\"].* \[msg "
     r"\"(.+)\"] \[data.* \[uri \"(\S+)\"].*, client: (\S+), server: (\S+), request: \"(\S+) (\S+) .*$")
@@ -27,25 +28,34 @@ ngx_fields = {
     }
 
 
-
+client_ips = set()
 excl_rules_attributes = set()
 excl_rule_id = 10000
 
+# with gzip.open("input/nginx/cloud.error.log-20211130.gz", "rb") as in_file:
+#     print(chardet.detect(in_file.read()))
 
-# Open input file in 'read' mode
-with open("input/cloud.error.log", "r") as in_file:
-        # Loop over each log line
-        for line in in_file:
+# Open input file in 'read' mode and in raw byte encoding (issues wit "rt")
+with gzip.open("input/nginx/cloud.error.log-20211129.gz", "rb") as in_file:
+    # Loop over each log line
+    for line in in_file:
+        try:
+            line = line.decode('utf-8')
             # If log line matches our regex, print to console, and output file
             if FILTER_MODSECURITY.search(line):
                 match = LINE_PATTERN_NGINX_ERROR.search(line)
-                # print(line)
+                client_ips.add(match.group(ngx_fields['client']))
                 if match.group(ngx_fields['client']) in HEALTHY_IPS:
                     excl_rules_attributes.add((match.group(ngx_fields['server']),
-                                                match.group(ngx_fields['uri']),
-                                                match.group(ngx_fields['rule_id']),
-                                                match.group(ngx_fields['rule_set']),
-                                                match.group(ngx_fields['msg'])))
+                                               match.group(ngx_fields['uri']),
+                                               match.group(ngx_fields['rule_id']),
+                                               match.group(ngx_fields['rule_set']),
+                                               match.group(ngx_fields['msg'])))
+        except UnicodeDecodeError:
+            print('skipped')
+            continue
+
+
 
                 # # request contains the parameters
                 # if match.group(ngx_fields['request']) != match.group(ngx_fields['uri']):
@@ -60,7 +70,7 @@ with open("input/cloud.error.log", "r") as in_file:
 for excl_rule_attributes in excl_rules_attributes:
     excl_rule_set = TRUNC_RULE_SET.search(excl_rule_attributes[3])
     if excl_rule_set.group(1) != 'REQUEST-949-BLOCKING-EVALUATION':
-        comment = '# CLIENT: ' + 'bla' + ' RULE_SET: ' + excl_rule_set.group(1) + ' MSG: ' + excl_rule_attributes[4]
+        comment = '# RULE_SET: ' + excl_rule_set.group(1) + ' MSG: ' + excl_rule_attributes[4]
         rule = 'SecRule REQUEST_URI "@beginsWith ' + match.group(ngx_fields['uri'])\
                + '" "id:' + str(excl_rule_id) + ', phase:2, pass, nolog, ctl:ruleRemoveById=' +\
                excl_rule_attributes[2] + '"'
@@ -69,6 +79,9 @@ for excl_rule_attributes in excl_rules_attributes:
 
 print(excl_rules_attributes)
 print('HEALTHY: ', len(excl_rules_attributes))
+
+if set(HEALTHY_IPS).issubset(client_ips):
+    print('no healthy ips found')
 
 # pot_ecl_rule = 'SecRule REQUEST_URI "@beginsWith ' + match.group(ngx_fields['request']) \
 #                + '" "id:' + str(excl_rule_id) + ', phase:1, pass, nolog, ctl:ruleRemoveById=930130"'
