@@ -64,7 +64,7 @@ with gzip.open("input/nginx/cloud.error.log-20211130.gz", "rb") as in_file:
 
 
 # Output file, where the matched loglines will be copied to
-output_filename = os.path.normpath("output/exclusion_rules.conf")
+output_filename = os.path.normpath("output/exclusion_rules.conf.example")
 # Overwrites the file, ensure we're starting out with a blank file
 with open(output_filename, "w") as out_file:
     out_file.write("")
@@ -88,6 +88,7 @@ with open(output_filename, "a") as out_file:
             rule_tot = comment + '\n' + rule
             print(rule_tot)
             rule_tot += '\n'
+
             out_file.write(rule_tot)
             excl_rule_id += 1
 
