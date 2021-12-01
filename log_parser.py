@@ -10,8 +10,6 @@ LINE_PATTERN_NGINX_ERROR = re.compile(
     r"\"(.+)\"] \[data.* \[uri \"(\S+)\"].*, client: (\S+), server: (\S+), request: \"(\S+) (\S+) .*$")
 TRUNC_RULE_SET = re.compile(r"\S+\/rules\/(\S+)$")
 HEALTHY_IPS = ('10.0.0.1', '80.238.210.166')
-
-
 ngx_fields = {
         "date": 1,
         "time": 2,
@@ -27,13 +25,9 @@ ngx_fields = {
         "request": 12
     }
 
-
 client_ips = set()
 excl_rules_attributes = set()
 excl_rule_id = 10000
-
-# with gzip.open("input/nginx/cloud.error.log-20211130.gz", "rb") as in_file:
-#     print(chardet.detect(in_file.read()))
 
 # Open input file in 'read' mode and in raw byte encoding (issues wit "rt")
 with gzip.open("input/nginx/cloud.error.log-20211129.gz", "rb") as in_file:
@@ -46,25 +40,21 @@ with gzip.open("input/nginx/cloud.error.log-20211129.gz", "rb") as in_file:
                 match = LINE_PATTERN_NGINX_ERROR.search(line)
                 client_ips.add(match.group(ngx_fields['client']))
                 if match.group(ngx_fields['client']) in HEALTHY_IPS:
+                    # Include parameters to the exclusion rules:
+                    if match.group(ngx_fields['request']) != match.group(ngx_fields['uri']):
+                        param = "abc"
+
                     excl_rules_attributes.add((match.group(ngx_fields['server']),
                                                match.group(ngx_fields['uri']),
                                                match.group(ngx_fields['rule_id']),
                                                match.group(ngx_fields['rule_set']),
-                                               match.group(ngx_fields['msg'])))
+                                               match.group(ngx_fields['msg']),
+                                               param))
         except UnicodeDecodeError:
             print('skipped')
             continue
 
-
-
-                # # request contains the parameters
-                # if match.group(ngx_fields['request']) != match.group(ngx_fields['uri']):
-                #     print(match.group(ngx_fields['request']))
-
-                # out_file.write(line)
-
-
-
+# out_file.write(line)
 
 # 0 server, 1 uri, 2 rule_id, 3 rule_set, 4 msg
 for excl_rule_attributes in excl_rules_attributes:
