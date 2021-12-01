@@ -139,3 +139,4 @@ cython_debug/
 /.idea/
 /nas-3.8/
 /output/*.conf
+/data/*.data
