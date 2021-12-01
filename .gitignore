@@ -138,3 +138,4 @@ dmypy.json
 cython_debug/
 /.idea/
 /nas-3.8/
+/output/exclusion_rules.conf
