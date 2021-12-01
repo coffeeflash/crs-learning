@@ -9,7 +9,7 @@ LINE_PATTERN_NGINX_ERROR = re.compile(
     r"(\S+) (\S+) \[(\S+)] .* ModSecurity: (.+) \[file \"(\S+).conf.* \[id \"(\S+)\"].* \[msg "
     r"\"(.+)\"] \[data.* \[uri \"(\S+)\"].*, client: (\S+), server: (\S+), request: \"(\S+) (\S+) .*$")
 TRUNC_RULE_SET = re.compile(r"\S+\/rules\/(\S+)$")
-HEALTHY_IPS = ('10.0.0.1', '80.238.210.166')
+HEALTHY_IPS = ['10.0.0.1', '80.238.210.166']
 ngx_fields = {
         "date": 1,
         "time": 2,
@@ -26,11 +26,15 @@ ngx_fields = {
     }
 
 client_ips = set()
-excl_rules_attributes = set()
-excl_rule_id = 10000
+excl_rules_attributes = {}
+
+RULEID_DEFAULT = 10000
+ADVISORY_RULES = ["911100", "920360", "920370", "920380", "920390", "920400", "920410", "920420", "920430", "920440", "920450", "920480", "949110", "949111", "959100", "980130"]
+
+excl_rule_id = RULEID_DEFAULT
 
 # Open input file in 'read' mode and in raw byte encoding (issues wit "rt")
-with gzip.open("input/nginx/cloud.error.log-20211129.gz", "rb") as in_file:
+with gzip.open("input/nginx/cloud.error.log-20211130.gz", "rb") as in_file:
     # Loop over each log line
     for line in in_file:
         try:
@@ -43,47 +47,52 @@ with gzip.open("input/nginx/cloud.error.log-20211129.gz", "rb") as in_file:
                     # Include parameters to the exclusion rules:
                     if match.group(ngx_fields['request']) != match.group(ngx_fields['uri']):
                         param = "abc"
-
-                    excl_rules_attributes.add((match.group(ngx_fields['server']),
+                    key = (match.group(ngx_fields['server']),
                                                match.group(ngx_fields['uri']),
                                                match.group(ngx_fields['rule_id']),
                                                match.group(ngx_fields['rule_set']),
                                                match.group(ngx_fields['msg']),
-                                               param))
+                                               match.group(ngx_fields['client']))
+                    if key in excl_rules_attributes:
+                        excl_rules_attributes[key] += 1
+                    else:
+                        excl_rules_attributes[key] = 1
         except UnicodeDecodeError:
             print('skipped')
             continue
 
-# out_file.write(line)
 
-# 0 server, 1 uri, 2 rule_id, 3 rule_set, 4 msg
-for excl_rule_attributes in excl_rules_attributes:
-    excl_rule_set = TRUNC_RULE_SET.search(excl_rule_attributes[3])
-    if excl_rule_set.group(1) != 'REQUEST-949-BLOCKING-EVALUATION':
-        comment = '# RULE_SET: ' + excl_rule_set.group(1) + ' MSG: ' + excl_rule_attributes[4]
-        rule = 'SecRule REQUEST_URI "@beginsWith ' + match.group(ngx_fields['uri'])\
-               + '" "id:' + str(excl_rule_id) + ', phase:2, pass, nolog, ctl:ruleRemoveById=' +\
-               excl_rule_attributes[2] + '"'
-        print(comment, '\n', rule)
-        excl_rule_id += 1
 
-print(excl_rules_attributes)
+# Output file, where the matched loglines will be copied to
+output_filename = os.path.normpath("output/exclusion_rules.conf")
+# Overwrites the file, ensure we're starting out with a blank file
+with open(output_filename, "w") as out_file:
+    out_file.write("")
+
+
+# Sort after number of requests
+excl_rules_attributes = sorted(excl_rules_attributes.items(), key=lambda x: x[1])
+
+# Open output file in 'append' mode
+with open(output_filename, "a") as out_file:
+    # 0 server, 1 uri, 2 rule_id, 3 rule_set, 4 msg
+    for excl_rule_attributes, num in excl_rules_attributes:
+        excl_rule_set = TRUNC_RULE_SET.search(excl_rule_attributes[3])
+        if excl_rule_attributes[2] not in ADVISORY_RULES:
+            comment = '# NOQ ' + str(num) + ' RULE_SET: ' + excl_rule_set.group(1) + ' MSG: '\
+                      + excl_rule_attributes[4]
+            # URI gets logged wrong some times, therefore replacing // with /
+            rule = 'SecRule REQUEST_URI "@beginsWith ' + re.sub("//", "/", excl_rule_attributes[1])\
+                   + '" "id:' + str(excl_rule_id) + ', phase:2, pass, nolog, ctl:ruleRemoveById=' +\
+                   excl_rule_attributes[2] + '"'
+            rule_tot = comment + '\n' + rule
+            print(rule_tot)
+            rule_tot += '\n'
+            out_file.write(rule_tot)
+            excl_rule_id += 1
+
+
 print('HEALTHY: ', len(excl_rules_attributes))
 
 if set(HEALTHY_IPS).issubset(client_ips):
     print('no healthy ips found')
-
-# pot_ecl_rule = 'SecRule REQUEST_URI "@beginsWith ' + match.group(ngx_fields['request']) \
-#                + '" "id:' + str(excl_rule_id) + ', phase:1, pass, nolog, ctl:ruleRemoveById=930130"'
-# if pot_ecl_rule not in exclusion_rules:
-#     exclusion_rules.add(pot_ecl_rule)
-#     excl_rule_id += 1
-
-# # Output file, where the matched loglines will be copied to
-# output_filename = os.path.normpath("output/parsed_lines.log")
-# # Overwrites the file, ensure we're starting out with a blank file
-# with open(output_filename, "w") as out_file:
-#     out_file.write("")
-# # Open output file in 'append' mode
-# with open(output_filename, "a") as out_file:
-
