@@ -140,3 +140,4 @@ cython_debug/
 /nas-3.8/
 /output/*.conf
 /data/*.data
+test.py

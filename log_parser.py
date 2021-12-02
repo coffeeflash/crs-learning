@@ -32,14 +32,29 @@ def get_line_pattern(webserver='ngx'):
     }
     line_pattern_ngx = re.compile(
         r"(\S+) (\S+) \[(\S+)] .* ModSecurity: (.+) \[file \"(\S+).conf.* \[id \"(\S+)\"].* \[msg "
-        r"\"(.+)\"] \[data.* \[uri \"(\S+)\"].*, client: (\S+), server: (\S+), request: \"(\S+) (\S+) .*$")
+        r"\"(.+)\"] \[data.* \[uri \"(.+)\"] \[unique_id.*, client: (\S+), server: (\S+), request: \"(\S+) (\S+) .*$")
     if webserver == 'ngx':
         return (line_pattern_ngx, line_fields_ngx)
     else:# apache
         return ()
 
 
-def extract_rules_from_log(log_file, line_pattern_fields, append_rules=False):
+def prepare_uri(uri, max_location_depth):
+    uri = re.sub("//", "/", uri)
+    split_uri = uri.split('/')
+    if len(split_uri) <= max_location_depth+1:
+        # print('nothung to do', uri)
+        return uri
+    else:
+        uri = ""
+        for part in split_uri[1:max_location_depth+1]:
+            uri += '/' + part
+        # print('to do', uri)
+        return uri
+
+
+
+def extract_rules_from_log(log_file, line_pattern_fields, max_location_depth, append_rules=False):
     line_pattern = line_pattern_fields[0]
     line_fields = line_pattern_fields[1]
     output_filename = os.path.normpath("output/exclusion_rules.conf")
@@ -48,7 +63,8 @@ def extract_rules_from_log(log_file, line_pattern_fields, append_rules=False):
     HEALTHY_IPS = ['10.0.0.1', '80.238.210.166']
     client_ips = set()
     RULEID_DEFAULT = 10000
-    ADVISORY_RULES = ["911100", "920360", "920370", "920380", "920390", "920400", "920410", "920420", "920430", "920440", "920450", "920480", "949110", "949111", "959100", "980130"]
+    ADVISORY_RULES = ["911100", "920360", "920370", "920380", "920390", "920400", "920410", "920420", "920430",
+                      "920440", "920450", "920480", "949110", "949111", "959100", "980130"]
     excl_rules_attributes = {}
 
     # load data from pers. layer
@@ -71,7 +87,6 @@ def extract_rules_from_log(log_file, line_pattern_fields, append_rules=False):
         old_excl_rules_attributes = {}
         reset_conf_file()
 
-
     # Open input file in 'read' mode and in raw byte encoding (issues wit "rt")
     with gzip.open(log_file, "rb") as in_file:
         # Loop over each log line
@@ -81,10 +96,13 @@ def extract_rules_from_log(log_file, line_pattern_fields, append_rules=False):
                 # If log line matches our regex, print to console, and output file
                 if FILTER_MODSECURITY.search(line):
                     match = line_pattern.search(line)
+                    if not match:
+                        # print('############## NO MATCH ##############: ', line)
+                        continue
                     client_ips.add(match.group(line_fields['client']))
                     if match.group(line_fields['client']) in HEALTHY_IPS:
                         key = (match.group(line_fields['server']),
-                                                   match.group(line_fields['uri']),
+                                                   prepare_uri(match.group(line_fields['uri']), max_location_depth),
                                                    match.group(line_fields['rule_id']),
                                                    match.group(line_fields['rule_set']),
                                                    match.group(line_fields['msg']))
@@ -109,7 +127,7 @@ def extract_rules_from_log(log_file, line_pattern_fields, append_rules=False):
                 comment = '# NOQ ' + str(num) + ' RULE_SET: ' + excl_rule_set.group(1) + ' MSG: '\
                     + excl_rule_attributes[4]
                 # URI gets logged wrong some times, therefore replacing // with /
-                rule = 'SecRule REQUEST_URI "@beginsWith ' + re.sub("//", "/", excl_rule_attributes[1])\
+                rule = 'SecRule REQUEST_URI "@beginsWith ' + excl_rule_attributes[1]\
                     + '" "id:' + str(excl_rule_id) + ', phase:2, pass, nolog, ctl:ruleRemoveById=' +\
                     excl_rule_attributes[2] + '"'
                 rule_tot = comment + '\n' + rule
@@ -134,14 +152,23 @@ def extract_rules_from_log(log_file, line_pattern_fields, append_rules=False):
 
 def main():
     append_rules = False
-    log_file = 'input/nginx/cloud.error.log-20211129.gz'
-    reset = False
+    max_location_depth = 3
+    log_files = ['input/nginx/cloud.error.log-20211129.gz', 'input/nginx/cloud.error.log-20211130.gz',
+                  'input/nginx/cloud.error.log-20211201.gz', 'input/nginx/cloud.error.log-20211202.gz']
+    # log_file = 'input/nginx/cloud.error.log-20211201.gz'
+    reset = True
 
     # reset learned.data
     if reset:
-        os.remove('data/learned.data')
+        try:
+            os.remove('data/learned.data')
+        except FileNotFoundError:
+            print('nothing to delete')
 
-    extract_rules_from_log(log_file, get_line_pattern('ngx'), append_rules)
+    for log_file in log_files:
+        extract_rules_from_log(log_file, get_line_pattern('ngx'), max_location_depth, append_rules)
+
+    # extract_rules_from_log(log_file, get_line_pattern('ngx'), max_location_depth, append_rules)
 
 
 # Press the green button in the gutter to run the script.
