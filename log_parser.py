@@ -4,6 +4,22 @@ import pickle  # for storing some data
 import gzip
 
 
+class Bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+
+def pretty_print(text, color):
+    print(f"{color}{text}{Bcolors.ENDC}")
+
+
 def reset_conf_file(output_filename=os.path.normpath("output/exclusion_rules.conf")):
     # Overwrites the file, ensure we're starting out with a blank file
     with open(output_filename, "w") as out_file:
@@ -53,8 +69,7 @@ def prepare_uri(uri, max_location_depth):
         return uri
 
 
-
-def extract_rules_from_log(log_file, line_pattern_fields, max_location_depth, append_rules=False):
+def extract_rules_from_log(log_file, line_pattern_fields, max_location_depth, append_rules):
     line_pattern = line_pattern_fields[0]
     line_fields = line_pattern_fields[1]
     output_filename = os.path.normpath("output/exclusion_rules.conf")
@@ -74,9 +89,8 @@ def extract_rules_from_log(log_file, line_pattern_fields, max_location_depth, ap
             learned = pickle.load(learned_data)
             excl_rule_id = learned['excl_rule_id']
             old_excl_rules_attributes = learned['excl_rules_attributes']
-            print(excl_rule_id)
+            pretty_print('Already learned rules up to id: ' + str(excl_rule_id), Bcolors.OKBLUE)
             if not append_rules:
-                print(".conf overwritten ...")
                 reset_conf_file()
                 excl_rule_id = RULEID_DEFAULT
                 excl_rules_attributes = old_excl_rules_attributes
@@ -87,6 +101,7 @@ def extract_rules_from_log(log_file, line_pattern_fields, max_location_depth, ap
         old_excl_rules_attributes = {}
         reset_conf_file()
 
+    excl_rule_id_start = excl_rule_id
     # Open input file in 'read' mode and in raw byte encoding (issues wit "rt")
     with gzip.open(log_file, "rb") as in_file:
         # Loop over each log line
@@ -136,13 +151,16 @@ def extract_rules_from_log(log_file, line_pattern_fields, max_location_depth, ap
                 out_file.write(rule_tot)
                 excl_rule_id += 1
 
-    print('HEALTHY: ', len(excl_rules_attributes))
+    pretty_print('Extracted ' + str(excl_rule_id - excl_rule_id_start) + ' healthy rules from ' + log_file, Bcolors.OKBLUE)
 
-    if set(HEALTHY_IPS).issubset(client_ips):
-        print('no healthy ips found')
+    if excl_rule_id - excl_rule_id_start == 0:
+        with open(output_filename, "a") as out_file:
+            out_file.write("nothing new to learn from file: " + log_file + "\n")
+
 
     # dump data into pers. layer
     with open('data/learned.data', 'wb') as data:
+        excl_rules_attributes.update(old_excl_rules_attributes)
         mem_data = {
             'excl_rules_attributes': excl_rules_attributes,
             'excl_rule_id': excl_rule_id
@@ -150,13 +168,54 @@ def extract_rules_from_log(log_file, line_pattern_fields, max_location_depth, ap
         pickle.dump(mem_data, data)
 
 
+def get_true_or_false(text):
+    text += ' [Y] for Yes, [N] for No'
+    while True:
+        pretty_print(text, Bcolors.OKCYAN)
+        var = input()
+        if var.lower() == 'y':
+            var = True
+            break
+        elif var.lower() == 'n':
+            var = False
+            break
+        else:
+            continue
+    return var
+
+
+def get_filepaths(directory):
+    """
+    This function will generate the file names in a directory
+    tree by walking the tree either top-down or bottom-up. For each
+    directory in the tree rooted at directory top (including top itself),
+    it yields a 3-tuple (dirpath, dirnames, filenames).
+    """
+    file_paths = []  # List which will store all of the full filepaths.
+
+    # Walk the tree.
+    for root, directories, files in os.walk(directory):
+        for filename in files:
+            # Join the two strings in order to form the full filepath.
+            filepath = os.path.join(root, filename)
+            file_paths.append(filepath)  # Add it to the list.
+
+    return file_paths  # Self-explanatory.
+
 def main():
-    append_rules = False
+    pretty_print("Welcome to the OWASP - False Positive Learning Toolkit.", Bcolors.OKBLUE)
+    reset = get_true_or_false("Reset recently learned rules?")
+    append_rules = get_true_or_false("Operate in append mode?")
+    if not append_rules:
+        pretty_print("Rules file will be overwritten, the learned rules are again there, but if\n"
+                     "one made changes, they will be lost.", Bcolors.WARNING)
+        if get_true_or_false("Do you want to restart?"):
+            main()
     max_location_depth = 3
     log_files = ['input/nginx/cloud.error.log-20211129.gz', 'input/nginx/cloud.error.log-20211130.gz',
                   'input/nginx/cloud.error.log-20211201.gz', 'input/nginx/cloud.error.log-20211202.gz']
     # log_file = 'input/nginx/cloud.error.log-20211201.gz'
-    reset = True
+
 
     # reset learned.data
     if reset:
@@ -165,7 +224,7 @@ def main():
         except FileNotFoundError:
             print('nothing to delete')
 
-    for log_file in log_files:
+    for log_file in get_filepaths('input/nginx'):
         extract_rules_from_log(log_file, get_line_pattern('ngx'), max_location_depth, append_rules)
 
     # extract_rules_from_log(log_file, get_line_pattern('ngx'), max_location_depth, append_rules)
