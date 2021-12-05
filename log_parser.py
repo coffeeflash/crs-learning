@@ -82,6 +82,7 @@ def extract_rules_from_log(log_file, line_pattern_fields, max_location_depth, ap
     ADVISORY_RULES = ["911100", "920360", "920370", "920380", "920390", "920400", "920410", "920420", "920430",
                       "920440", "920450", "920480", "949110", "949111", "959100", "980130"]
     excl_rules_attributes = {}
+    not_matched_log_lines = []
 
     # load data from pers. layer
     try:
@@ -114,6 +115,7 @@ def extract_rules_from_log(log_file, line_pattern_fields, max_location_depth, ap
                     match = line_pattern.search(line)
                     if not match:
                         # print('############## NO MATCH ##############: ', line)
+                        not_matched_log_lines.append(line)
                         continue
                     client_ips.add(match.group(line_fields['client']))
                     if match.group(line_fields['client']) in HEALTHY_IPS:
@@ -151,12 +153,16 @@ def extract_rules_from_log(log_file, line_pattern_fields, max_location_depth, ap
                 rule_tot += '\n'
                 out_file.write(rule_tot)
                 excl_rule_id += 1
-
+    pretty_print('Following log lines could not be matched by the regex:', Bcolors.WARNING)
+    for not_matched_log_line in not_matched_log_lines:
+        pretty_print(not_matched_log_line[:-1], Bcolors.WARNING)
     pretty_print('Extracted ' + str(excl_rule_id - excl_rule_id_start) + ' healthy rules from ' + log_file, Bcolors.OKBLUE)
 
     if excl_rule_id - excl_rule_id_start == 0:
         with open(output_filename, "a") as out_file:
-            out_file.write("nothing new to learn from file: " + log_file + "\n")
+            text ="nothing new to learn from file: " + log_file + "\n"
+            out_file.write(text)
+            pretty_print(text, Bcolors.OKBLUE)
 
 
     # dump data into pers. layer
@@ -213,10 +219,6 @@ def main():
         if get_true_or_false("Do you want to restart?"):
             main()
     max_location_depth = 3
-    log_files = ['input/nginx/cloud.error.log-20211129.gz', 'input/nginx/cloud.error.log-20211130.gz',
-                  'input/nginx/cloud.error.log-20211201.gz', 'input/nginx/cloud.error.log-20211202.gz']
-    # log_file = 'input/nginx/cloud.error.log-20211201.gz'
-
 
     # reset learned.data
     if reset:
