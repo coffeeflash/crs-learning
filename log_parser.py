@@ -4,21 +4,9 @@ import re
 import pickle  # for storing some data
 import gzip
 
-
-class Bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKCYAN = '\033[96m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-
-
-def pretty_print(text, color):
-    print(f"{color}{text}{Bcolors.ENDC}")
+# own modules
+import log_patterns as lp
+import cli
 
 
 def reset_conf_file(output_filename=os.path.normpath("output/exclusion_rules.conf")):
@@ -32,30 +20,6 @@ def print_dict(dictionary):
         print(key)
 
 
-def get_line_pattern(webserver='ngx'):
-    line_fields_ngx = {
-        "date": 1,
-        "time": 2,
-        "level": 3,
-        "summary": 4,
-        "rule_set": 5,
-        "rule_id": 6,
-        "msg": 7,
-        "uri": 8,
-        "client": 9,
-        "server": 10,
-        "method": 11,
-        "request": 12
-    }
-    line_pattern_ngx = re.compile(
-        r"(\S+) (\S+) \[(\S+)] .* ModSecurity: (.+) \[file \"(\S+).conf.* \[id \"(\S+)\"].* \[msg "
-        r"\"(.+)\"] \[data.* \[uri \"(.+)\"] \[unique_id.*, client: (\S+), server: (\S+), request: \"(\S+) (\S+) .*$")
-    if webserver == 'ngx':
-        return (line_pattern_ngx, line_fields_ngx)
-    else:# apache
-        return ()
-
-
 def prepare_uri(uri, max_location_depth):
     uri = re.sub("//", "/", uri)
     split_uri = uri.split('/')
@@ -66,7 +30,6 @@ def prepare_uri(uri, max_location_depth):
         uri = ""
         for part in split_uri[1:max_location_depth+1]:
             uri += '/' + part
-        # print('to do', uri)
         return uri
 
 
@@ -76,7 +39,10 @@ def extract_rules_from_log(log_file, line_pattern_fields, max_location_depth, ap
     output_filename = os.path.normpath("output/exclusion_rules.conf")
     FILTER_MODSECURITY = re.compile(r".*ModSecurity:.*$")
     TRUNC_RULE_SET = re.compile(r"\S+\/rules\/(\S+)$")
-    HEALTHY_IPS = ['10.0.0.1', '80.238.210.166']
+    HEALTHY_IPS = ['10.0.0.1', '10.1.1.1', '10.1.2.1', '10.1.3.1', '192.168.1.1',  # default considered healthy
+                   '80.238.210.166', '80.238.210.166', '84.75.158.225']  # special ip's to be asked in the cli...
+
+    
     client_ips = set()
     RULEID_DEFAULT = 10000
     ADVISORY_RULES = ["911100", "920360", "920370", "920380", "920390", "920400", "920410", "920420", "920430",
@@ -91,7 +57,7 @@ def extract_rules_from_log(log_file, line_pattern_fields, max_location_depth, ap
             learned = pickle.load(learned_data)
             excl_rule_id = learned['excl_rule_id']
             old_excl_rules_attributes = learned['excl_rules_attributes']
-            pretty_print('Already learned rules up to id: ' + str(excl_rule_id), Bcolors.OKBLUE)
+            cli.pretty_print('Already learned rules up to id: ' + str(excl_rule_id), "INFO")
             if not append_rules:
                 reset_conf_file()
                 excl_rule_id = RULEID_DEFAULT
@@ -153,16 +119,16 @@ def extract_rules_from_log(log_file, line_pattern_fields, max_location_depth, ap
                 rule_tot += '\n'
                 out_file.write(rule_tot)
                 excl_rule_id += 1
-    pretty_print('Following log lines could not be matched by the regex:', Bcolors.WARNING)
+    cli.pretty_print('Following log lines could not be matched by the regex:', "WARNING")
     for not_matched_log_line in not_matched_log_lines:
-        pretty_print(not_matched_log_line[:-1], Bcolors.WARNING)
-    pretty_print('Extracted ' + str(excl_rule_id - excl_rule_id_start) + ' healthy rules from ' + log_file, Bcolors.OKBLUE)
+        cli.pretty_print(not_matched_log_line[:-1], "WARNING")
+    cli.pretty_print('Extracted ' + str(excl_rule_id - excl_rule_id_start) + ' healthy rules from ' + log_file, "INFO")
 
     if excl_rule_id - excl_rule_id_start == 0:
         with open(output_filename, "a") as out_file:
             text ="nothing new to learn from file: " + log_file + "\n"
             out_file.write(text)
-            pretty_print(text, Bcolors.OKBLUE)
+            cli.pretty_print(text, "INFO")
 
 
     # dump data into pers. layer
@@ -175,20 +141,7 @@ def extract_rules_from_log(log_file, line_pattern_fields, max_location_depth, ap
         pickle.dump(mem_data, data)
 
 
-def get_true_or_false(text):
-    text += ' [Y] for Yes, [N] for No'
-    while True:
-        pretty_print(text, Bcolors.OKCYAN)
-        var = input()
-        if var.lower() == 'y':
-            var = True
-            break
-        elif var.lower() == 'n':
-            var = False
-            break
-        else:
-            continue
-    return var
+
 
 
 def get_filepaths(directory):
@@ -210,13 +163,13 @@ def get_filepaths(directory):
     return file_paths  # Self-explanatory.
 
 def main():
-    pretty_print("Welcome to the OWASP - False Positive Learning Toolkit.", Bcolors.OKBLUE)
-    reset = get_true_or_false("Reset recently learned rules?")
-    append_rules = get_true_or_false("Operate in append mode?")
+    cli.pretty_print("Welcome to the OWASP - False Positive Learning Toolkit.", "INFO")
+    reset = cli.get_true_or_false("Reset recently learned rules?")
+    append_rules = cli.get_true_or_false("Operate in append mode?")
     if not append_rules:
-        pretty_print("Rules file will be overwritten, the learned rules are again there, but if\n"
-                     "one made changes, they will be lost.", Bcolors.WARNING)
-        if get_true_or_false("Do you want to restart?"):
+        cli.pretty_print("Rules file will be overwritten, the learned rules are again there, but if\n"
+                     "one made changes, they will be lost.", "WARNING")
+        if cli.get_true_or_false("Do you want to restart?"):
             main()
     max_location_depth = 3
 
@@ -225,10 +178,12 @@ def main():
         try:
             os.remove('data/learned.data')
         except FileNotFoundError:
-            print('nothing to delete')
+            cli.pretty_print('nothing to delete', 'WARNING')
 
-    for log_file in get_filepaths('input/nginx'):
-        extract_rules_from_log(log_file, get_line_pattern('ngx'), max_location_depth, append_rules)
+    web_server = cli.get_ngx_or_apache()
+
+    for log_file in get_filepaths('input/' + web_server):
+        extract_rules_from_log(log_file, lp.get_line_pattern(web_server), max_location_depth, append_rules)
 
     # extract_rules_from_log(log_file, get_line_pattern('ngx'), max_location_depth, append_rules)
 

@@ -1,0 +1,260 @@
+# NOQ 1 RULE_SET: REQUEST-941-APPLICATION-ATTACK-XSS MSG: Node-Validator Deny List Keywords
+SecRule REQUEST_URI "@beginsWith /apps/quicknotes/notes" "id:10000, phase:2, pass, nolog, ctl:ruleRemoveById=941181"
+# NOQ 1 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of printable chars below ascii 127)
+SecRule REQUEST_URI "@beginsWith /ocs/v2.php/apps" "id:10001, phase:2, pass, nolog, ctl:ruleRemoveById=920272"
+# NOQ 1 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of printable chars below ascii 127)
+SecRule REQUEST_URI "@beginsWith /index.php/apps/files" "id:10002, phase:2, pass, nolog, ctl:ruleRemoveById=920272"
+# NOQ 1 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Request Missing an Accept Header
+SecRule REQUEST_URI "@beginsWith /remote.php/webdav" "id:10003, phase:2, pass, nolog, ctl:ruleRemoveById=920300"
+# NOQ 1 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (cookies): # of special characters exceeded (3)
+SecRule REQUEST_URI "@beginsWith /remote.php/" "id:10004, phase:2, pass, nolog, ctl:ruleRemoveById=942421"
+# NOQ 1 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (cookies): # of special characters exceeded (3)
+SecRule REQUEST_URI "@beginsWith /login/flow" "id:10005, phase:2, pass, nolog, ctl:ruleRemoveById=942421"
+# NOQ 1 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (cookies): # of special characters exceeded (3)
+SecRule REQUEST_URI "@beginsWith /core/js/oc.js" "id:10006, phase:2, pass, nolog, ctl:ruleRemoveById=942421"
+# NOQ 1 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (cookies): # of special characters exceeded (3)
+SecRule REQUEST_URI "@beginsWith /apps/encryption/ajax" "id:10007, phase:2, pass, nolog, ctl:ruleRemoveById=942421"
+# NOQ 1 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of printable chars below ascii 127)
+SecRule REQUEST_URI "@beginsWith /remote.php/dav/trashbin" "id:10008, phase:2, pass, nolog, ctl:ruleRemoveById=920272"
+# NOQ 1 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of very strict set)
+SecRule REQUEST_URI "@beginsWith /remote.php/dav/trashbin" "id:10009, phase:2, pass, nolog, ctl:ruleRemoveById=920273"
+# NOQ 1 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (args): # of special characters exceeded (2)
+SecRule REQUEST_URI "@beginsWith /css/files/95cf-c3b5-merged.css" "id:10010, phase:2, pass, nolog, ctl:ruleRemoveById=942432"
+# NOQ 1 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (args): # of special characters exceeded (2)
+SecRule REQUEST_URI "@beginsWith /css/core/88a4-c3b5-server.css" "id:10011, phase:2, pass, nolog, ctl:ruleRemoveById=942432"
+# NOQ 1 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (args): # of special characters exceeded (2)
+SecRule REQUEST_URI "@beginsWith /css/spreed/89b3-c3b5-unified-search.css" "id:10012, phase:2, pass, nolog, ctl:ruleRemoveById=942432"
+# NOQ 1 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (args): # of special characters exceeded (2)
+SecRule REQUEST_URI "@beginsWith /css/core/88a4-c3b5-css-variables.css" "id:10013, phase:2, pass, nolog, ctl:ruleRemoveById=942432"
+# NOQ 1 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (args): # of special characters exceeded (2)
+SecRule REQUEST_URI "@beginsWith /css/text/593e-c3b5-icons.css" "id:10014, phase:2, pass, nolog, ctl:ruleRemoveById=942432"
+# NOQ 1 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (args): # of special characters exceeded (2)
+SecRule REQUEST_URI "@beginsWith /css/files_sharing/f5a2-c3b5-icons.css" "id:10015, phase:2, pass, nolog, ctl:ruleRemoveById=942432"
+# NOQ 1 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (args): # of special characters exceeded (2)
+SecRule REQUEST_URI "@beginsWith /css/activity/96db-c3b5-style.css" "id:10016, phase:2, pass, nolog, ctl:ruleRemoveById=942432"
+# NOQ 1 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (args): # of special characters exceeded (2)
+SecRule REQUEST_URI "@beginsWith /css/spreed/89b3-c3b5-merged-files.css" "id:10017, phase:2, pass, nolog, ctl:ruleRemoveById=942432"
+# NOQ 1 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (args): # of special characters exceeded (2)
+SecRule REQUEST_URI "@beginsWith /css/notifications/e2ca-c3b5-styles.css" "id:10018, phase:2, pass, nolog, ctl:ruleRemoveById=942432"
+# NOQ 1 RULE_SET: REQUEST-931-APPLICATION-ATTACK-RFI MSG: Possible Remote File Inclusion (RFI) Attack: Off-Domain Reference/Link
+SecRule REQUEST_URI "@beginsWith /index.php/apps/passwords" "id:10019, phase:2, pass, nolog, ctl:ruleRemoveById=931130"
+# NOQ 1 RULE_SET: REQUEST-932-APPLICATION-ATTACK-RCE MSG: Remote Command Execution: Wildcard bypass technique attempt
+SecRule REQUEST_URI "@beginsWith /index.php/apps/passwords" "id:10020, phase:2, pass, nolog, ctl:ruleRemoveById=932190"
+# NOQ 1 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (args): # of special characters exceeded (2)
+SecRule REQUEST_URI "@beginsWith /index.php/core/preview.png" "id:10021, phase:2, pass, nolog, ctl:ruleRemoveById=942432"
+# NOQ 1 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of printable chars below ascii 127)
+SecRule REQUEST_URI "@beginsWith /remote.php/webdav/cathobi" "id:10022, phase:2, pass, nolog, ctl:ruleRemoveById=920272"
+# NOQ 1 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of very strict set)
+SecRule REQUEST_URI "@beginsWith /remote.php/webdav/cathobi" "id:10023, phase:2, pass, nolog, ctl:ruleRemoveById=920273"
+# NOQ 1 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of very strict set)
+SecRule REQUEST_URI "@beginsWith /remote.php/dav/principals" "id:10024, phase:2, pass, nolog, ctl:ruleRemoveById=920273"
+# NOQ 1 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of very strict set)
+SecRule REQUEST_URI "@beginsWith /remote.php/dav/uploads" "id:10025, phase:2, pass, nolog, ctl:ruleRemoveById=920273"
+# NOQ 1 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Request Missing an Accept Header
+SecRule REQUEST_URI "@beginsWith /.well-known/caldav" "id:10026, phase:2, pass, nolog, ctl:ruleRemoveById=920300"
+# NOQ 1 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of very strict set)
+SecRule REQUEST_URI "@beginsWith /.well-known/caldav" "id:10027, phase:2, pass, nolog, ctl:ruleRemoveById=920273"
+# NOQ 1 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Request Missing an Accept Header
+SecRule REQUEST_URI "@beginsWith /remote.php/caldav" "id:10028, phase:2, pass, nolog, ctl:ruleRemoveById=920300"
+# NOQ 1 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of very strict set)
+SecRule REQUEST_URI "@beginsWith /remote.php/caldav" "id:10029, phase:2, pass, nolog, ctl:ruleRemoveById=920273"
+# NOQ 1 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Request Missing an Accept Header
+SecRule REQUEST_URI "@beginsWith /remote.php/caldav/principals" "id:10030, phase:2, pass, nolog, ctl:ruleRemoveById=920300"
+# NOQ 2 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: GET or HEAD Request with Body Content
+SecRule REQUEST_URI "@beginsWith /apps/quicknotes/notes" "id:10031, phase:2, pass, nolog, ctl:ruleRemoveById=920170"
+# NOQ 2 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of very strict set)
+SecRule REQUEST_URI "@beginsWith /core/preview.png" "id:10032, phase:2, pass, nolog, ctl:ruleRemoveById=920273"
+# NOQ 2 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (args): # of special characters exceeded (2)
+SecRule REQUEST_URI "@beginsWith /core/preview.png" "id:10033, phase:2, pass, nolog, ctl:ruleRemoveById=942432"
+# NOQ 2 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of printable chars below ascii 127)
+SecRule REQUEST_URI "@beginsWith /remote.php/webdav/cathobi_docs" "id:10034, phase:2, pass, nolog, ctl:ruleRemoveById=920272"
+# NOQ 2 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of very strict set)
+SecRule REQUEST_URI "@beginsWith /remote.php/webdav/cathobi_docs" "id:10035, phase:2, pass, nolog, ctl:ruleRemoveById=920273"
+# NOQ 2 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Request Missing an Accept Header
+SecRule REQUEST_URI "@beginsWith /.well-known/webdav/Notes" "id:10036, phase:2, pass, nolog, ctl:ruleRemoveById=920300"
+# NOQ 2 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of very strict set)
+SecRule REQUEST_URI "@beginsWith /.well-known/webdav/Notes" "id:10037, phase:2, pass, nolog, ctl:ruleRemoveById=920273"
+# NOQ 3 RULE_SET: REQUEST-932-APPLICATION-ATTACK-RCE MSG: Remote Command Execution: Unix Shell Code Found
+SecRule REQUEST_URI "@beginsWith /apps/files/" "id:10038, phase:2, pass, nolog, ctl:ruleRemoveById=932160"
+# NOQ 3 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of very strict set)
+SecRule REQUEST_URI "@beginsWith /login/flow" "id:10039, phase:2, pass, nolog, ctl:ruleRemoveById=920273"
+# NOQ 3 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (args): # of special characters exceeded (2)
+SecRule REQUEST_URI "@beginsWith /login/flow" "id:10040, phase:2, pass, nolog, ctl:ruleRemoveById=942432"
+# NOQ 3 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of printable chars below ascii 127)
+SecRule REQUEST_URI "@beginsWith /remote.php/webdav/Photos" "id:10041, phase:2, pass, nolog, ctl:ruleRemoveById=920272"
+# NOQ 3 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of very strict set)
+SecRule REQUEST_URI "@beginsWith /remote.php/webdav/Photos" "id:10042, phase:2, pass, nolog, ctl:ruleRemoveById=920273"
+# NOQ 3 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (cookies): # of special characters exceeded (3)
+SecRule REQUEST_URI "@beginsWith /ocs/v2.php/cloud" "id:10043, phase:2, pass, nolog, ctl:ruleRemoveById=942421"
+# NOQ 3 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Request Missing an Accept Header
+SecRule REQUEST_URI "@beginsWith /remote.php/caldav/" "id:10044, phase:2, pass, nolog, ctl:ruleRemoveById=920300"
+# NOQ 3 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of very strict set)
+SecRule REQUEST_URI "@beginsWith /remote.php/caldav/" "id:10045, phase:2, pass, nolog, ctl:ruleRemoveById=920273"
+# NOQ 4 RULE_SET: REQUEST-941-APPLICATION-ATTACK-XSS MSG: IE XSS Filters - Attack Detected
+SecRule REQUEST_URI "@beginsWith /apps/quicknotes/notes" "id:10046, phase:2, pass, nolog, ctl:ruleRemoveById=941340"
+# NOQ 4 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: GET or HEAD Request with Body Content
+SecRule REQUEST_URI "@beginsWith /index.php/apps/passwords" "id:10047, phase:2, pass, nolog, ctl:ruleRemoveById=920170"
+# NOQ 4 RULE_SET: REQUEST-932-APPLICATION-ATTACK-RCE MSG: Remote Command Execution: Wildcard bypass technique attempt
+SecRule REQUEST_URI "@beginsWith /login" "id:10048, phase:2, pass, nolog, ctl:ruleRemoveById=932190"
+# NOQ 4 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of very strict set)
+SecRule REQUEST_URI "@beginsWith /index.php/core/preview.png" "id:10049, phase:2, pass, nolog, ctl:ruleRemoveById=920273"
+# NOQ 4 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of printable chars below ascii 127)
+SecRule REQUEST_URI "@beginsWith /remote.php/webdav/Documents" "id:10050, phase:2, pass, nolog, ctl:ruleRemoveById=920272"
+# NOQ 4 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of very strict set)
+SecRule REQUEST_URI "@beginsWith /remote.php/webdav/Documents" "id:10051, phase:2, pass, nolog, ctl:ruleRemoveById=920273"
+# NOQ 5 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of printable chars below ascii 127)
+SecRule REQUEST_URI "@beginsWith /remote.php/dav/" "id:10052, phase:2, pass, nolog, ctl:ruleRemoveById=920272"
+# NOQ 5 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of printable chars below ascii 127)
+SecRule REQUEST_URI "@beginsWith /apps/quicknotes/notes" "id:10053, phase:2, pass, nolog, ctl:ruleRemoveById=920272"
+# NOQ 5 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of very strict set)
+SecRule REQUEST_URI "@beginsWith /apps/quicknotes/notes" "id:10054, phase:2, pass, nolog, ctl:ruleRemoveById=920273"
+# NOQ 5 RULE_SET: REQUEST-941-APPLICATION-ATTACK-XSS MSG: XSS Filter - Category 5: Disallowed HTML Attributes
+SecRule REQUEST_URI "@beginsWith /apps/quicknotes/notes" "id:10055, phase:2, pass, nolog, ctl:ruleRemoveById=941150"
+# NOQ 5 RULE_SET: REQUEST-941-APPLICATION-ATTACK-XSS MSG: Possible XSS Attack Detected - HTML Tag Handler
+SecRule REQUEST_URI "@beginsWith /apps/quicknotes/notes" "id:10056, phase:2, pass, nolog, ctl:ruleRemoveById=941320"
+# NOQ 5 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Detects MySQL comment-/space-obfuscated injections and backtick termination
+SecRule REQUEST_URI "@beginsWith /apps/quicknotes/notes" "id:10057, phase:2, pass, nolog, ctl:ruleRemoveById=942200"
+# NOQ 5 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Detects basic SQL authentication bypass attempts 2/3
+SecRule REQUEST_URI "@beginsWith /apps/quicknotes/notes" "id:10058, phase:2, pass, nolog, ctl:ruleRemoveById=942260"
+# NOQ 5 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Detects classic SQL injection probings 2/3
+SecRule REQUEST_URI "@beginsWith /apps/quicknotes/notes" "id:10059, phase:2, pass, nolog, ctl:ruleRemoveById=942370"
+# NOQ 5 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (args): # of special characters exceeded (12)
+SecRule REQUEST_URI "@beginsWith /apps/quicknotes/notes" "id:10060, phase:2, pass, nolog, ctl:ruleRemoveById=942430"
+# NOQ 5 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: SQL Comment Sequence Detected
+SecRule REQUEST_URI "@beginsWith /apps/quicknotes/notes" "id:10061, phase:2, pass, nolog, ctl:ruleRemoveById=942440"
+# NOQ 5 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (args): # of special characters exceeded (6)
+SecRule REQUEST_URI "@beginsWith /apps/quicknotes/notes" "id:10062, phase:2, pass, nolog, ctl:ruleRemoveById=942431"
+# NOQ 5 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Meta-Character Anomaly Detection Alert - Repetitive Non-Word Characters
+SecRule REQUEST_URI "@beginsWith /apps/quicknotes/notes" "id:10063, phase:2, pass, nolog, ctl:ruleRemoveById=942460"
+# NOQ 5 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (args): # of special characters exceeded (2)
+SecRule REQUEST_URI "@beginsWith /apps/quicknotes/notes" "id:10064, phase:2, pass, nolog, ctl:ruleRemoveById=942432"
+# NOQ 5 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (args): # of special characters exceeded (2)
+SecRule REQUEST_URI "@beginsWith /login" "id:10065, phase:2, pass, nolog, ctl:ruleRemoveById=942432"
+# NOQ 6 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of very strict set)
+SecRule REQUEST_URI "@beginsWith /login" "id:10066, phase:2, pass, nolog, ctl:ruleRemoveById=920273"
+# NOQ 6 RULE_SET: REQUEST-930-APPLICATION-ATTACK-LFI MSG: Path Traversal Attack (/../)
+SecRule REQUEST_URI "@beginsWith /apps/files/" "id:10067, phase:2, pass, nolog, ctl:ruleRemoveById=930100"
+# NOQ 7 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (cookies): # of special characters exceeded (3)
+SecRule REQUEST_URI "@beginsWith /remote.php/dav/avatars" "id:10068, phase:2, pass, nolog, ctl:ruleRemoveById=942421"
+# NOQ 7 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Request Missing an Accept Header
+SecRule REQUEST_URI "@beginsWith /apps/files/img" "id:10069, phase:2, pass, nolog, ctl:ruleRemoveById=920300"
+# NOQ 7 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Request Missing an Accept Header
+SecRule REQUEST_URI "@beginsWith /apps/activity/img" "id:10070, phase:2, pass, nolog, ctl:ruleRemoveById=920300"
+# NOQ 7 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Request Missing an Accept Header
+SecRule REQUEST_URI "@beginsWith /apps/passwords/img" "id:10071, phase:2, pass, nolog, ctl:ruleRemoveById=920300"
+# NOQ 7 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Request Missing an Accept Header
+SecRule REQUEST_URI "@beginsWith /apps/quicknotes/img" "id:10072, phase:2, pass, nolog, ctl:ruleRemoveById=920300"
+# NOQ 8 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Request Missing an Accept Header
+SecRule REQUEST_URI "@beginsWith /apps/calendar/img" "id:10073, phase:2, pass, nolog, ctl:ruleRemoveById=920300"
+# NOQ 8 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Request Missing an Accept Header
+SecRule REQUEST_URI "@beginsWith /apps/photos/img" "id:10074, phase:2, pass, nolog, ctl:ruleRemoveById=920300"
+# NOQ 8 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (args): # of special characters exceeded (12)
+SecRule REQUEST_URI "@beginsWith /remote.php/caldav/calendars" "id:10075, phase:2, pass, nolog, ctl:ruleRemoveById=942430"
+# NOQ 8 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (args): # of special characters exceeded (6)
+SecRule REQUEST_URI "@beginsWith /remote.php/caldav/calendars" "id:10076, phase:2, pass, nolog, ctl:ruleRemoveById=942431"
+# NOQ 9 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of very strict set)
+SecRule REQUEST_URI "@beginsWith /remote.php/dav/" "id:10077, phase:2, pass, nolog, ctl:ruleRemoveById=920273"
+# NOQ 9 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (cookies): # of special characters exceeded (3)
+SecRule REQUEST_URI "@beginsWith /index.php/avatar/catho" "id:10078, phase:2, pass, nolog, ctl:ruleRemoveById=942421"
+# NOQ 9 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (cookies): # of special characters exceeded (3)
+SecRule REQUEST_URI "@beginsWith /status.php" "id:10079, phase:2, pass, nolog, ctl:ruleRemoveById=942421"
+# NOQ 10 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: SQL Injection Attack: SQL Tautology Detected
+SecRule REQUEST_URI "@beginsWith /apps/quicknotes/notes" "id:10080, phase:2, pass, nolog, ctl:ruleRemoveById=942130"
+# NOQ 10 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Missing User Agent Header
+SecRule REQUEST_URI "@beginsWith /remote.php/webdav/" "id:10081, phase:2, pass, nolog, ctl:ruleRemoveById=920320"
+# NOQ 12 RULE_SET: REQUEST-930-APPLICATION-ATTACK-LFI MSG: Path Traversal Attack (/../)
+SecRule REQUEST_URI "@beginsWith /apps/files/" "id:10082, phase:2, pass, nolog, ctl:ruleRemoveById=930110"
+# NOQ 13 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (args): # of special characters exceeded (12)
+SecRule REQUEST_URI "@beginsWith /remote.php/dav/calendars" "id:10083, phase:2, pass, nolog, ctl:ruleRemoveById=942430"
+# NOQ 13 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (args): # of special characters exceeded (6)
+SecRule REQUEST_URI "@beginsWith /remote.php/dav/calendars" "id:10084, phase:2, pass, nolog, ctl:ruleRemoveById=942431"
+# NOQ 13 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (args): # of special characters exceeded (2)
+SecRule REQUEST_URI "@beginsWith /remote.php/dav/calendars" "id:10085, phase:2, pass, nolog, ctl:ruleRemoveById=942432"
+# NOQ 14 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (cookies): # of special characters exceeded (3)
+SecRule REQUEST_URI "@beginsWith /ocs/v2.php/core" "id:10086, phase:2, pass, nolog, ctl:ruleRemoveById=942421"
+# NOQ 16 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (args): # of special characters exceeded (2)
+SecRule REQUEST_URI "@beginsWith /remote.php/caldav/calendars" "id:10087, phase:2, pass, nolog, ctl:ruleRemoveById=942432"
+# NOQ 17 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of very strict set)
+SecRule REQUEST_URI "@beginsWith /index.php/apps/files" "id:10088, phase:2, pass, nolog, ctl:ruleRemoveById=920273"
+# NOQ 18 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (cookies): # of special characters exceeded (3)
+SecRule REQUEST_URI "@beginsWith /remote.php/caldav/calendars" "id:10089, phase:2, pass, nolog, ctl:ruleRemoveById=942421"
+# NOQ 20 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (cookies): # of special characters exceeded (3)
+SecRule REQUEST_URI "@beginsWith /remote.php/caldav/principals" "id:10090, phase:2, pass, nolog, ctl:ruleRemoveById=942421"
+# NOQ 23 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (cookies): # of special characters exceeded (3)
+SecRule REQUEST_URI "@beginsWith /ocs/v1.php/cloud" "id:10091, phase:2, pass, nolog, ctl:ruleRemoveById=942421"
+# NOQ 24 RULE_SET: REQUEST-921-PROTOCOL-ATTACK MSG: LDAP Injection Attack
+SecRule REQUEST_URI "@beginsWith /remote.php/webdav/Photos" "id:10092, phase:2, pass, nolog, ctl:ruleRemoveById=921200"
+# NOQ 26 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of very strict set)
+SecRule REQUEST_URI "@beginsWith /ocs/v2.php/apps" "id:10093, phase:2, pass, nolog, ctl:ruleRemoveById=920273"
+# NOQ 28 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of printable chars below ascii 127)
+SecRule REQUEST_URI "@beginsWith /remote.php/webdav/" "id:10094, phase:2, pass, nolog, ctl:ruleRemoveById=920272"
+# NOQ 28 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of very strict set)
+SecRule REQUEST_URI "@beginsWith /remote.php/webdav/" "id:10095, phase:2, pass, nolog, ctl:ruleRemoveById=920273"
+# NOQ 29 RULE_SET: REQUEST-941-APPLICATION-ATTACK-XSS MSG: XSS Attack Detected via libinjection
+SecRule REQUEST_URI "@beginsWith /remote.php/dav/files" "id:10096, phase:2, pass, nolog, ctl:ruleRemoveById=941100"
+# NOQ 29 RULE_SET: REQUEST-941-APPLICATION-ATTACK-XSS MSG: XSS Filter - Category 3: Attribute Vector
+SecRule REQUEST_URI "@beginsWith /remote.php/dav/files" "id:10097, phase:2, pass, nolog, ctl:ruleRemoveById=941130"
+# NOQ 29 RULE_SET: REQUEST-941-APPLICATION-ATTACK-XSS MSG: IE XSS Filters - Attack Detected
+SecRule REQUEST_URI "@beginsWith /remote.php/dav/files" "id:10098, phase:2, pass, nolog, ctl:ruleRemoveById=941330"
+# NOQ 29 RULE_SET: REQUEST-941-APPLICATION-ATTACK-XSS MSG: IE XSS Filters - Attack Detected
+SecRule REQUEST_URI "@beginsWith /remote.php/dav/files" "id:10099, phase:2, pass, nolog, ctl:ruleRemoveById=941340"
+# NOQ 29 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: SQL Injection Attack: Common Injection Testing Detected
+SecRule REQUEST_URI "@beginsWith /remote.php/dav/files" "id:10100, phase:2, pass, nolog, ctl:ruleRemoveById=942110"
+# NOQ 29 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: SQL Injection Attack: SQL Tautology Detected
+SecRule REQUEST_URI "@beginsWith /remote.php/dav/files" "id:10101, phase:2, pass, nolog, ctl:ruleRemoveById=942130"
+# NOQ 29 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Detects basic SQL authentication bypass attempts 3/3
+SecRule REQUEST_URI "@beginsWith /remote.php/dav/files" "id:10102, phase:2, pass, nolog, ctl:ruleRemoveById=942340"
+# NOQ 29 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (args): # of special characters exceeded (12)
+SecRule REQUEST_URI "@beginsWith /remote.php/dav/files" "id:10103, phase:2, pass, nolog, ctl:ruleRemoveById=942430"
+# NOQ 29 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Detects classic SQL injection probings 3/3
+SecRule REQUEST_URI "@beginsWith /remote.php/dav/files" "id:10104, phase:2, pass, nolog, ctl:ruleRemoveById=942490"
+# NOQ 29 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (args): # of special characters exceeded (6)
+SecRule REQUEST_URI "@beginsWith /remote.php/dav/files" "id:10105, phase:2, pass, nolog, ctl:ruleRemoveById=942431"
+# NOQ 29 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Meta-Character Anomaly Detection Alert - Repetitive Non-Word Characters
+SecRule REQUEST_URI "@beginsWith /remote.php/dav/files" "id:10106, phase:2, pass, nolog, ctl:ruleRemoveById=942460"
+# NOQ 29 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (args): # of special characters exceeded (2)
+SecRule REQUEST_URI "@beginsWith /remote.php/dav/files" "id:10107, phase:2, pass, nolog, ctl:ruleRemoveById=942432"
+# NOQ 33 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of very strict set)
+SecRule REQUEST_URI "@beginsWith /ocs/v2.php/search" "id:10108, phase:2, pass, nolog, ctl:ruleRemoveById=920273"
+# NOQ 36 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of printable chars below ascii 127)
+SecRule REQUEST_URI "@beginsWith /remote.php/dav/calendars" "id:10109, phase:2, pass, nolog, ctl:ruleRemoveById=920272"
+# NOQ 40 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of printable chars below ascii 127)
+SecRule REQUEST_URI "@beginsWith /remote.php/caldav/principals" "id:10110, phase:2, pass, nolog, ctl:ruleRemoveById=920272"
+# NOQ 41 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of very strict set)
+SecRule REQUEST_URI "@beginsWith /remote.php/caldav/principals" "id:10111, phase:2, pass, nolog, ctl:ruleRemoveById=920273"
+# NOQ 46 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of very strict set)
+SecRule REQUEST_URI "@beginsWith /apps/text/session" "id:10112, phase:2, pass, nolog, ctl:ruleRemoveById=920273"
+# NOQ 48 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of printable chars below ascii 127)
+SecRule REQUEST_URI "@beginsWith /remote.php/webdav" "id:10113, phase:2, pass, nolog, ctl:ruleRemoveById=920272"
+# NOQ 48 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of very strict set)
+SecRule REQUEST_URI "@beginsWith /remote.php/webdav" "id:10114, phase:2, pass, nolog, ctl:ruleRemoveById=920273"
+# NOQ 56 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of very strict set)
+SecRule REQUEST_URI "@beginsWith /core/preview" "id:10115, phase:2, pass, nolog, ctl:ruleRemoveById=920273"
+# NOQ 68 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (args): # of special characters exceeded (2)
+SecRule REQUEST_URI "@beginsWith /index.php/apps/passwords" "id:10116, phase:2, pass, nolog, ctl:ruleRemoveById=942432"
+# NOQ 74 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (cookies): # of special characters exceeded (3)
+SecRule REQUEST_URI "@beginsWith /remote.php/dav/calendars" "id:10117, phase:2, pass, nolog, ctl:ruleRemoveById=942421"
+# NOQ 89 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of very strict set)
+SecRule REQUEST_URI "@beginsWith /remote.php/dav/calendars" "id:10118, phase:2, pass, nolog, ctl:ruleRemoveById=920273"
+# NOQ 91 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Request Missing an Accept Header
+SecRule REQUEST_URI "@beginsWith /remote.php/dav/calendars" "id:10119, phase:2, pass, nolog, ctl:ruleRemoveById=920300"
+# NOQ 101 RULE_SET: REQUEST-921-PROTOCOL-ATTACK MSG: HTTP Parameter Pollution ()
+SecRule REQUEST_URI "@beginsWith /remote.php/webdav/Photos" "id:10120, phase:2, pass, nolog, ctl:ruleRemoveById=921180"
+# NOQ 185 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Request Missing an Accept Header
+SecRule REQUEST_URI "@beginsWith /apps/updatenotification/img" "id:10121, phase:2, pass, nolog, ctl:ruleRemoveById=920300"
+# NOQ 226 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of printable chars below ascii 127)
+SecRule REQUEST_URI "@beginsWith /remote.php/caldav/calendars" "id:10122, phase:2, pass, nolog, ctl:ruleRemoveById=920272"
+# NOQ 266 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of very strict set)
+SecRule REQUEST_URI "@beginsWith /index.php/apps/passwords" "id:10123, phase:2, pass, nolog, ctl:ruleRemoveById=920273"
+# NOQ 360 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of very strict set)
+SecRule REQUEST_URI "@beginsWith /remote.php/caldav/calendars" "id:10124, phase:2, pass, nolog, ctl:ruleRemoveById=920273"
+# NOQ 364 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Request Missing an Accept Header
+SecRule REQUEST_URI "@beginsWith /remote.php/caldav/calendars" "id:10125, phase:2, pass, nolog, ctl:ruleRemoveById=920300"
+# NOQ 468 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (cookies): # of special characters exceeded (3)
+SecRule REQUEST_URI "@beginsWith /ocs/v2.php/apps" "id:10126, phase:2, pass, nolog, ctl:ruleRemoveById=942421"
+# NOQ 3594 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of printable chars below ascii 127)
+SecRule REQUEST_URI "@beginsWith /remote.php/dav/files" "id:10127, phase:2, pass, nolog, ctl:ruleRemoveById=920272"
+# NOQ 3737 RULE_SET: REQUEST-920-PROTOCOL-ENFORCEMENT MSG: Invalid character in request (outside of very strict set)
+SecRule REQUEST_URI "@beginsWith /remote.php/dav/files" "id:10128, phase:2, pass, nolog, ctl:ruleRemoveById=920273"
+# NOQ 3936 RULE_SET: REQUEST-942-APPLICATION-ATTACK-SQLI MSG: Restricted SQL Character Anomaly Detection (cookies): # of special characters exceeded (3)
+SecRule REQUEST_URI "@beginsWith /remote.php/dav/files" "id:10129, phase:2, pass, nolog, ctl:ruleRemoveById=942421"
