@@ -1,6 +1,6 @@
 import re
 
-
+# TODO: convert the variable in some smart class hirarchy with enums
 def get_line_pattern(webserver='nginx'):
     line_pattern_ngx = re.compile(
         r"(\S+) (\S+) \[(\S+)] .* ModSecurity: (.+) \[file \"(\S+).conf.* \[id \"(\S+)\"].* \[msg "
