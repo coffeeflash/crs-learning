@@ -123,7 +123,7 @@ def extract_rules_from_log(log_file, line_pattern_fields, max_location_depth, ap
     # Open output file in 'append' mode
     with open(output_filename, "a") as out_file:
         if append_rules and old_excl_rules_attributes:
-            out_file.write('############### Appending the rules ##############\n')
+            out_file.write('############### Appending the rules from file; ' + log_file + ' ##############\n')
         # 0 server, 1 uri, 2 rule_id, 3 rule_set, 4 msg
         for excl_rule_attributes, num in excl_rules_attributes_sorted:
             if excl_rule_attributes[2] not in ADVISORY_RULES and excl_rule_attributes not in old_excl_rules_attributes:
@@ -146,7 +146,7 @@ def extract_rules_from_log(log_file, line_pattern_fields, max_location_depth, ap
 
     if excl_rule_id - excl_rule_id_start == 0:
         with open(output_filename, "a") as out_file:
-            text ="nothing new to learn from file: " + log_file + "\n"
+            text ="# nothing new to learn from file: " + log_file + "\n"
             out_file.write(text)
             cli.pretty_print(text, cli.Color.INFO)
 
