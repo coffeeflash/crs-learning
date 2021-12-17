@@ -43,7 +43,7 @@ def get_filepaths(directory):
     return file_paths  # Self-explanatory.
 
 def main():
-    print_log("input/apache/tellme_error.log.2.gz", 2)
+    print_log("input/apache/tellme_error.log.a.gz", 2)
 
 
 # Press the green button in the gutter to run the script.
